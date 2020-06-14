@@ -36,3 +36,15 @@ impl Gems {
         (self.yellow * 1) + (self.green * 2) + (self.green * 3) * (self.red * 4)
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_run() {
+        // TODO: can i simplify this conversion or allow run() to just accept any kind of string iterator?
+        let args = vec!["2", "3", "4", "5"].into_iter().map(|s|s.to_string());
+        assert_eq!(run(args), 188);
+    }
+}
