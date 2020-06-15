@@ -1,7 +1,10 @@
 use std::env;
+use std::error::Error;
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let args = env::args().skip(1);
-    let score = ubongo_score_calculator::ops::run(args);
-    println!("SCORE: {:?}", score);
+    ubongo_score_calculator::ops::run(args).and_then(|score| -> Result<(), Box<dyn Error>> {
+        println!("SCORE: {:?}", score);
+        Ok(()) // TODO: can i avoid this?
+    })
 }
