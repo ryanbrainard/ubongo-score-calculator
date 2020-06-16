@@ -1,9 +1,10 @@
 use std::env;
 use std::error::Error;
+use ubongo_score_calculator::ops;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args = env::args().skip(1);
-    ubongo_score_calculator::ops::run(args).map(|score| -> () {
+    ops::run(args).map(|score| -> () {
         println!("SCORE: {:?}", score);
     })
 }
