@@ -32,13 +32,21 @@ impl Gems {
         //     None => Err(format!("no `{}` arg found", name).into()),
         // }
 
-        // 2. Using match and map_err. Happy medium :)
+        // 2a. Using match and map_err with custom err. Happy medium :)
         match arg_str_opt {
             Some(arg_str) => arg_str
                 .parse::<u32>()
                 .map_err(|err| format!("arg `{}` parse error: {}", name, err).into()),
             None => Err(format!("no `{}` arg found", name).into()),
         }
+
+        // 2b. Using match and map_err with just error type conversion.
+        // match arg_str_opt {
+        //     Some(arg_str) => arg_str
+        //         .parse::<u32>()
+        //         .map_err(|err| err.into()),
+        //     None => Err(format!("no `{}` arg found", name).into()),
+        // }
 
         // 3. Only using map_*
         // arg_str_opt.map_or(Err(format!("no `{}` arg found", name).into()), |arg_str| {
