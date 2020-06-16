@@ -23,15 +23,29 @@ impl Gems {
     }
 
     fn from_arg(name: &str, arg_str_opt: Option<String>) -> Result<u32, Box<dyn Error>> {
+        // 1. Only using match
+        // match arg_str_opt {
+        //     Some(arg_str) => match arg_str.parse::<u32>() {
+        //         Ok(val) => Ok(val),
+        //         Err(err) => Err(format!("arg parse error: {}", err).into()),
+        //     },
+        //     None => Err(format!("no `{}` arg found", name).into()),
+        // }
+
+        // 2. Using match and map_err. Happy medium :)
         match arg_str_opt {
-            Some(arg_str) => {
-                match arg_str.parse::<u32>() {
-                    Ok(val) => Ok(val),
-                    Err(err) => Err(format!("arg parse error: {}", err).into()),
-                }
-            }
+            Some(arg_str) => arg_str
+                .parse::<u32>()
+                .map_err(|err| format!("arg `{}` parse error: {}", name, err).into()),
             None => Err(format!("no `{}` arg found", name).into()),
         }
+
+        // 3. Only using map_*
+        // arg_str_opt.map_or(Err(format!("no `{}` arg found", name).into()), |arg_str| {
+        //     arg_str
+        //         .parse::<u32>()
+        //         .map_err(|err| format!("arg `{}` parse error: {}", name, err).into())
+        // })
     }
 
     pub fn calculate_score(&self) -> u32 {
@@ -46,7 +60,7 @@ mod test {
     #[test]
     fn test_run_ok() {
         // TODO: can i simplify this conversion or allow run() to just accept any kind of string iterator?
-        let args = vec!["2", "3", "4", "5"].into_iter().map(|s|s.to_string());
+        let args = vec!["2", "3", "4", "5"].into_iter().map(|s| s.to_string());
         let result = run(args);
         // TODO: ok to upwrap in a test?
         assert_eq!(result.unwrap(), 188);
@@ -55,7 +69,7 @@ mod test {
     #[test]
     fn test_run_missing_arg() {
         // TODO: can i simplify this conversion or allow run() to just accept any kind of string iterator?
-        let args = vec!["2", "3", "4"].into_iter().map(|s|s.to_string());
+        let args = vec!["2", "3", "4"].into_iter().map(|s| s.to_string());
         let result = run(args);
         // TODO: ok to upwrap in a test?
         assert_eq!(result.unwrap_err().to_string(), "no `red` arg found");
